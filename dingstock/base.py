@@ -6,16 +6,13 @@ import urllib
 
 import requests
 
-from config import DING_CONFIG, STOCK_CONFIG
+from .config import DING_CONFIG, STOCK_CONFIG
 
 
 class Stock:
 
     # 股票详情url
     DETAIL_URL = 'https://xueqiu.com/S/'
-
-    # 询价uri
-    QUOTE_URI = 'https://stock.xueqiu.com/v5/stock/realtime/quotec.json?symbol='
 
     def __init__(self, config):
 
@@ -116,7 +113,10 @@ class Stock:
         return out
 
     def __enquiring(self):
-        res = requests.get(Stock.QUOTE_URI + self.symbol, headers={'User-Agent': ''})
+        res = requests.get(
+            'https://stock.xueqiu.com/v5/stock/realtime/quotec.json?symbol=' + self.symbol, 
+            headers={'User-Agent': ''}
+        )
         try:
             return res.json()['data'][0]
         except:

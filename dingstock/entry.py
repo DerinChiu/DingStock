@@ -1,6 +1,6 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
 
-from base import DingManager, StockManager
+from .base import DingManager, StockManager
 
 scheduler = BlockingScheduler()
 
