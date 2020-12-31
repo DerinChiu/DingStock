@@ -6,7 +6,7 @@ import urllib
 
 import requests
 
-from .config import DING_CONFIG, STOCK_CONFIG
+from config import DING_CONFIG, STOCK_CONFIG
 
 
 class Stock:
@@ -79,9 +79,9 @@ class Stock:
     def output_markdown(self, at=False):
         md = ""
         if self.change > 0:
-            md += f'#### [{self.symbol}]({self.detail_url})  **{self.current}**  <font color=#dd0000>↑{self.change} {self.percent}%</font>  \n'
+            md += f'#### [{self.symbol}]({self.detail_url})  **{self.current}**  <font color=#dd0000>➚{self.change} {self.percent}%</font>  \n'
         elif self.change < 0:
-            md += f'#### [{self.symbol}]({self.detail_url})  **{self.current}**  <font color=#006600>↓{self.change} {self.percent}%</font>  \n'
+            md += f'#### [{self.symbol}]({self.detail_url})  **{self.current}**  <font color=#006600>➘{self.change} {self.percent}%</font>  \n'
         else:
             md += f'#### [{self.symbol}]({self.detail_url})  **{self.current}**  {self.change} {self.percent}%  \n'
 
@@ -89,9 +89,9 @@ class Stock:
 
         profit = self.profit()
         if profit > 0:
-            md += f'> ###### 成本: **{self.cost}**  现值: **{self.value()}**  <font color=#dd0000>↑{profit}</font>'
+            md += f'> ###### 成本: **{self.cost}**  现值: **{self.value()}**  <font color=#dd0000>➚{profit}</font>'
         elif profit < 0:
-            md += f'> ###### 成本: **{self.cost}**  现值: **{self.value()}**  <font color=#006600>↓{profit}</font>'
+            md += f'> ###### 成本: **{self.cost}**  现值: **{self.value()}**  <font color=#006600>➘{profit}</font>'
         else:
             md += f'> ###### 成本: **{self.cost}**  现值: **{self.value()}**  {profit}'
         
@@ -134,15 +134,18 @@ class Ding:
 
     def __init__(self, config):
         self.webhook = config['webhook']
-        self.key = config['key']
+        self.key = config.get('key', None)
 
     def send(self, title, content, method='actionCard'):
         content['data'].update({'title': title})
         msg = {'msgtype': method, method: content['data']}
         if 'at' in content:
             msg['at'] = content['at']
-        timestamp, sign = self.__get_sign()
-        requests.post(f'{self.webhook}&timestamp={timestamp}&sign={sign}', json=msg)
+        if self.key:
+            timestamp, sign = self.__get_sign()
+            requests.post(f'{self.webhook}&timestamp={timestamp}&sign={sign}', json=msg)
+        else:
+            requests.post(f'{self.webhook}', json=msg)
 
     def __get_sign(self):
         timestamp = str(round(time.time() * 1000))

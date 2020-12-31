@@ -23,7 +23,7 @@ STOCK_CONFIG = [
 # 钉钉相关设置
 DING_CONFIG = [
     {
-        'webhook': 'https://oapi.dingtalk.com/robot/send?access_token=[replaces with your token]]',
-        'key': '[replaces with your key]'  # SEC开头的key
+        'webhook': 'replaces with your webhook',
+        # 'key': '[replaces with your key]'  # (若选择加签方式请提供)SEC开头的key
     }
 ]
